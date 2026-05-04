@@ -1,0 +1,130 @@
+import java.util.Scanner;
+
+public class Notakto {
+
+    char[][] board = new char[3][3];
+    Scanner in = new Scanner(System.in);
+    boolean gameOver = false;
+    int turn = 1;
+
+    public static void main(String[] args) {
+        new Notakto();
+    }
+
+    public Notakto() {
+        setupBoard();
+        // do the rules and allat
+        System.out.println("Welcome to Notakto!");
+        System.out.println("Both players place X's. The player who makes three in a row loses.\n");
+
+        while (!gameOver) {
+            printBoard();
+            playerMove();
+            checkGameOver();
+
+            if (!gameOver) {
+                computerMove();
+                checkGameOver();
+            }
+        }
+    }
+
+    
+    public void setupBoard() {
+        for (int r = 0; r < 3; r++)
+            for (int c = 0; c < 3; c++)
+                board[r][c] = ' ';
+    }
+
+   
+    public void playerMove() {
+        System.out.println("Your turn. Choose a row and column (1,2,3): ");
+        int row = in.nextInt("row: ");
+        int col = in.nextInt("column: ");
+        // cow is short for collumn remember that
+        while (row < 1 || row > 3 || col < 1 || col > 3 || board[row - 1][col - 1] != ' ') {
+            System.out.println("Invalid move. Try again:");
+            row = in.nextInt();
+            col = in.nextInt();
+        }
+
+        board[row - 1][col - 1] = 'X';
+        turn = 1;
+    }
+
+  
+    public void computerMove() {
+        System.out.println("Computer's turn...");
+        int row = 0;
+        int col = 0;
+
+       
+        boolean moved = false;
+        while (!moved) {
+            for (int r = 0; r < 3 && !moved; r++) {
+                for (int c = 0; c < 3 && !moved; c++) {
+                    if (board[r][c] == ' ') {
+                        board[r][c] = 'X';
+                        moved = true;
+                    }
+                }
+            }
+        }
+        turn = 2;
+    }
+
+    
+    public void checkGameOver() {
+        if (checkWin()) {
+            printBoard();
+            if (turn == 1)
+                System.out.println("You made three in a row! You lose!");
+            else
+                System.out.println("The computer made three in a row! You win!");
+            gameOver = true;
+        } else if (isFull()) {
+            printBoard();
+            System.out.println("Board is full! The last player loses!");
+            gameOver = true;
+        }
+    }
+
+    
+    public boolean checkWin() {
+       
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == 'X' && board[i][1] == 'X' && board[i][2] == 'X')
+                return true;
+            if (board[0][i] == 'X' && board[1][i] == 'X' && board[2][i] == 'X')
+                return true;
+        }
+
+        
+        if (board[0][0] == 'X' && board[1][1] == 'X' && board[2][2] == 'X')
+            return true;
+        if (board[0][2] == 'X' && board[1][1] == 'X' && board[2][0] == 'X')
+            return true;
+
+        return false;
+    }
+
+    
+    public boolean isFull() {
+        for (int r = 0; r < 3; r++)
+            for (int c = 0; c < 3; c++)
+                if (board[r][c] == ' ')
+                    return false;
+        return true;
+    }
+
+    public void printBoard() {
+        System.out.println();
+        for (int r = 0; r < 3; r++) {
+            System.out.println(" " + board[r][0] + " | " + board[r][1] + " | " + board[r][2]);
+            if (r < 2)
+                System.out.println("---+---+---");
+        }
+        
+    }
+}
+
